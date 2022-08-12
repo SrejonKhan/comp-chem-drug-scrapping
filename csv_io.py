@@ -1,8 +1,9 @@
 import csv
 
-# yeasin 
-def write_to_csv():
-    pass
+def write_to_csv(filename,row):
+    with open(filename, 'a') as file: 
+        writer = csv.writer(file)
+        writer.writerow(row)
 
 # rai 
 def write_swissadme_headers():
