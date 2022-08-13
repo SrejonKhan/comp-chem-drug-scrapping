@@ -4,12 +4,18 @@ import requests
 from swissadme import navigate_swissadme_site
 from pkcsm import navigate_pkcsm_site
 from csv_io import write_to_csv
+import os 
 
 async def main():
+    drug_file_path = input("Enter path of Drug names = ")
+    current_dir = os.getcwd()
+    if drug_file_path[0] is ".":
+        drug_file_path = current_dir + drug_file_path
+        print(drug_file_path)
     swissadme_details = []
     pkcsm_details = []
 
-    file = open("drug.txt")
+    file = open(drug_file_path)
     file_content = file.readlines()
     drug_names = []
     for line in file_content:
