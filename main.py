@@ -3,7 +3,7 @@ from pyppeteer import launch
 import requests
 from swissadme import navigate_swissadme_site
 from pkcsm import navigate_pkcsm_site
-from csv_io import write_to_csv
+from csv_io import write_rows_to_csv, write_swissadme_headers, write_pkcsm_headers
 
 async def main():
     swissadme_details = []
@@ -20,6 +20,14 @@ async def main():
         swissadme_details.append(drug_details.get("swissadme_result"))
         pkcsm_details.append(drug_details.get("pkcsm_result"))
 
+    #csv headers
+    write_swissadme_headers("swissadme.csv")
+    write_pkcsm_headers("pkcsm.csv")
+
+    #write details to csv 
+    write_rows_to_csv("swissadme.csv", swissadme_details)
+    write_rows_to_csv("pkcsm.csv", pkcsm_details)
+    
 async def get_drug_details(drug_name):
     browser = await launch() 
     page = await browser.newPage()
