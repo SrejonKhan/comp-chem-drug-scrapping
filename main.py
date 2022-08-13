@@ -3,8 +3,8 @@ from pyppeteer import launch
 import requests
 from swissadme import navigate_swissadme_site
 from pkcsm import navigate_pkcsm_site
-from csv_io import write_to_csv
-import os 
+from csv_io import write_rows_to_csv, write_swissadme_headers, write_pkcsm_headers
+import os
 
 async def main():
     drug_file_path = input("Enter path of Drug names = ")
@@ -22,10 +22,18 @@ async def main():
         drug_names.append(line.rstrip())
 
     for drug_name in drug_names:
-       drug_details = await get_drug_details(drug_name)
-       swissadme_details.append(drug_details.get("swissadme_result"))
-       pkcsm_details.append(drug_details.get("pkcsm_result"))
+        drug_details = await get_drug_details(drug_name)
+        swissadme_details.append(drug_details.get("swissadme_result"))
+        pkcsm_details.append(drug_details.get("pkcsm_result"))
 
+    #csv headers
+    write_swissadme_headers("swissadme.csv")
+    write_pkcsm_headers("pkcsm.csv")
+
+    #write details to csv 
+    write_rows_to_csv("swissadme.csv", swissadme_details)
+    write_rows_to_csv("pkcsm.csv", pkcsm_details)
+    
 async def get_drug_details(drug_name):
     browser = await launch() 
     page = await browser.newPage()
