@@ -16,9 +16,9 @@ async def main():
         drug_names.append(line.rstrip())
 
     for drug_name in drug_names:
-       drug_details = await get_drug_details(drug_name)
-       swissadme_details.append(drug_details.get("swissadme_result"))
-       pkcsm_details.append(drug_details.get("pkcsm_result"))
+        drug_details = await get_drug_details(drug_name)
+        swissadme_details.append(drug_details.get("swissadme_result"))
+        pkcsm_details.append(drug_details.get("pkcsm_result"))
 
 async def get_drug_details(drug_name):
     browser = await launch() 
