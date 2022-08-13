@@ -6,9 +6,19 @@ from pkcsm import navigate_pkcsm_site
 from csv_io import write_to_csv
 
 async def main():
-    drug_name = 'Anastrozole'    
-    data = await get_drug_details(drug_name)
-    print(data)
+    swissadme_details = []
+    pkcsm_details = []
+
+    file = open("drug.txt")
+    file_content = file.readlines()
+    drug_names = []
+    for line in file_content:
+        drug_names.append(line.rstrip())
+
+    for drug_name in drug_names:
+       drug_details = await get_drug_details(drug_name)
+       swissadme_details.append(drug_details.get("swissadme_result"))
+       pkcsm_details.append(drug_details.get("pkcsm_result"))
 
 async def get_drug_details(drug_name):
     browser = await launch() 
