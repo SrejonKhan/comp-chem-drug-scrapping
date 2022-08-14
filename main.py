@@ -16,12 +16,12 @@ async def main():
 
     swissadme_details = []
     pkcsm_details = []
-
-    file = open(drug_file_path)
-    file_content = file.readlines()
     drug_names = []
-    for line in file_content:
-        drug_names.append(line.rstrip())
+
+    with(open(drug_file_path)) as file:
+        file_content = file.readlines()
+        for line in file_content:
+            drug_names.append(line.rstrip())
 
     #csv headers
     write_swissadme_headers(swissadme_output_path)
