@@ -15,6 +15,10 @@ async def main():
                 path = os.path.join(folder, file)
                 print('Deleted:', path)
                 os.remove(path)
+            if file.endswith('.txt'):
+                path = os.path.join(folder, file)
+                print('Deleted:', path)
+                os.remove(path)
 
     current_dir = os.getcwd()
     drug_file_path = os.path.join(current_dir, input("Enter path of Drug names = "))
