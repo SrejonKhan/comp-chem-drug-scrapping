@@ -7,11 +7,11 @@ from csv_io import write_rows_to_csv, write_swissadme_headers, write_pkcsm_heade
 import os
 
 async def main():
-    drug_file_path = input("Enter path of Drug names = ")
     current_dir = os.getcwd()
-    if drug_file_path[0] is ".":
-        drug_file_path = current_dir + drug_file_path
-        print(drug_file_path)
+    drug_file_path = os.path.join(current_dir, input("Enter path of Drug names = "))
+    output_path = os.path.join(current_dir, "output")
+    os.makedirs(output_path, exist_ok=True)
+    
     swissadme_details = []
     pkcsm_details = []
 
@@ -27,9 +27,9 @@ async def main():
         pkcsm_details.append(drug_details.get("pkcsm_result"))
 
     #csv headers
-    write_swissadme_headers("swissadme.csv")
-    write_pkcsm_headers("pkcsm.csv")
-
+    write_swissadme_headers(os.path.join(output_path, "swissadme.csv"))
+    write_pkcsm_headers(os.path.join(output_path, "pkcsm.csv"))
+   
     #write details to csv 
     write_rows_to_csv("swissadme.csv", swissadme_details)
     write_rows_to_csv("pkcsm.csv", pkcsm_details)

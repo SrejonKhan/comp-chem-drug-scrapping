@@ -18,6 +18,7 @@ async def navigate_swissadme_site(page, drug_name, canonical_smile):
     await page.click("#submitButton")
     await asyncio.sleep(5)
 
+    await page.screenshot({'path': 'screen.png', 'fullPage': True})
     swissadme_content = await page.content()
     swissadme_result = scrape_swissadme(swissadme_content, drug_name, canonical_smile)
 
