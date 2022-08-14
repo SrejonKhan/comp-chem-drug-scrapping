@@ -4,7 +4,9 @@ from bs4 import BeautifulSoup
 import asyncio
 import pyppeteer
 
-async def navigate_pkcsm_site(page, drug_name, canonical_smile): 
+async def navigate_pkcsm_site(page, drug_name, canonical_smile, logger): 
+    logger.write_log("Navigating pkcsm site...")
+
     pkcsm_url = 'https://biosig.lab.uq.edu.au/pkcsm/prediction'
     await page.goto(pkcsm_url, {"timeout": 100000, "waitUntil": "domcontentloaded"})
 
@@ -24,8 +26,11 @@ async def navigate_pkcsm_site(page, drug_name, canonical_smile):
 
     await navpromise
 
+    logger.write_log("Waiting for pkcsm calculation...")
     pkcsm_result =  await wait_till_computation(page, drug_name)
 
+    logger.write_log("Scrapped pkcsm site...")
+    
     return pkcsm_result
 
 async def wait_till_computation(page, drug_name) -> Tuple:
@@ -38,7 +43,7 @@ async def wait_till_computation(page, drug_name) -> Tuple:
     try:
         await nextRequest 
     except pyppeteer.errors.TimeoutError: # we will consider that all of our data is loaded
-        print("All data is loaded.")
+        pass
 
     data_table = soup.select_one("body > div.container > div.row.fluid > div.span8 > div.well > table > tbody")
     all_props = data_table.find_all("tr")
@@ -50,7 +55,6 @@ async def wait_till_computation(page, drug_name) -> Tuple:
             is_all_loaded = False
     
     if not is_all_loaded: 
-        print("All data is not loaded yet!")
         await page.screenshot({'path': 'example.png', 'fullPage': True})
         result = await wait_till_computation(page, drug_name) 
         return result

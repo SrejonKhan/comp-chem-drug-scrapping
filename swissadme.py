@@ -3,7 +3,9 @@ from bs4 import BeautifulSoup
 from rdkit import Chem
 import asyncio
 
-async def navigate_swissadme_site(page, drug_name, canonical_smile):
+async def navigate_swissadme_site(page, drug_name, canonical_smile, logger):
+    logger.write_log("Navigating swissadme site...")
+    
     swissadme_url = 'http://www.swissadme.ch/index.php'
     await page.goto(swissadme_url)
 
@@ -21,6 +23,8 @@ async def navigate_swissadme_site(page, drug_name, canonical_smile):
     await page.screenshot({'path': 'screen.png', 'fullPage': True})
     swissadme_content = await page.content()
     swissadme_result = scrape_swissadme(swissadme_content, drug_name, canonical_smile)
+    
+    logger.write_log("Scrapped swissadme site...")
 
     return swissadme_result
 
