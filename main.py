@@ -3,7 +3,7 @@ from pyppeteer import launch
 import requests
 from swissadme import navigate_swissadme_site
 from pkcsm import navigate_pkcsm_site
-from csv_io import write_rows_to_csv, write_swissadme_headers, write_pkcsm_headers
+from csv_io import write_rows_to_csv, write_swissadme_headers, write_pkcsm_headers, write_row_to_csv
 import os
 
 async def main():
@@ -11,7 +11,9 @@ async def main():
     drug_file_path = os.path.join(current_dir, input("Enter path of Drug names = "))
     output_path = os.path.join(current_dir, "output")
     os.makedirs(output_path, exist_ok=True)
-    
+    swissadme_output_path = os.path.join(output_path, "swissadme.csv")
+    pkcsm_output_path = os.path.join(output_path, "pkcsm.csv")
+
     swissadme_details = []
     pkcsm_details = []
 
@@ -21,18 +23,24 @@ async def main():
     for line in file_content:
         drug_names.append(line.rstrip())
 
+    #csv headers
+    write_swissadme_headers(swissadme_output_path)
+    write_pkcsm_headers(pkcsm_output_path)
+
+    # scrape details for each drug
     for drug_name in drug_names:
         drug_details = await get_drug_details(drug_name)
-        swissadme_details.append(drug_details.get("swissadme_result"))
-        pkcsm_details.append(drug_details.get("pkcsm_result"))
+        swissadme_res = drug_details.get("swissadme_result")
+        pkcsm_res = drug_details.get("pkcsm_result")
+        
+        # add to main list
+        swissadme_details.append(swissadme_res)
+        pkcsm_details.append(pkcsm_res)
 
-    #csv headers
-    write_swissadme_headers(os.path.join(output_path, "swissadme.csv"))
-    write_pkcsm_headers(os.path.join(output_path, "pkcsm.csv"))
-   
-    #write details to csv 
-    write_rows_to_csv("swissadme.csv", swissadme_details)
-    write_rows_to_csv("pkcsm.csv", pkcsm_details)
+        # write to csv
+        write_row_to_csv(swissadme_output_path, swissadme_res)
+        write_row_to_csv(pkcsm_output_path, pkcsm_res)
+        
     
 async def get_drug_details(drug_name):
     browser = await launch() 

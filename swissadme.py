@@ -16,7 +16,7 @@ async def navigate_swissadme_site(page, drug_name, canonical_smile):
     await page.click("#smiles")
     await page.keyboard.press('ArrowLeft')
     await page.click("#submitButton")
-    await asyncio.sleep(5)
+    await asyncio.sleep(10)
 
     await page.screenshot({'path': 'screen.png', 'fullPage': True})
     swissadme_content = await page.content()
@@ -24,9 +24,8 @@ async def navigate_swissadme_site(page, drug_name, canonical_smile):
 
     return swissadme_result
 
-async def scrape_swissadme(content, drug_name, smiles) -> Tuple:
+def scrape_swissadme(content, drug_name, smiles) -> Tuple:
     soup = BeautifulSoup(content, "html.parser")
-    await asyncio.sleep(5)
 
     left_table = soup.select_one("#sib_body > div:nth-child(33) > div:nth-child(3) > div:nth-child(5) > table:nth-child(4) > tbody")
     right_table = soup.select_one("#sib_body > div:nth-child(33) > div:nth-child(3) > div:nth-child(6) > table > tbody")
