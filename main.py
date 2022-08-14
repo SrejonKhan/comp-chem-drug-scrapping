@@ -42,7 +42,7 @@ async def main():
 
     #csv headers
     write_swissadme_headers(swissadme_output_path)
-    write_pkcsm_headers(pkcsm_output_path)
+    # write_pkcsm_headers(pkcsm_output_path)
 
     # scrape details for each drug
     for drug_name in drug_names:
@@ -55,15 +55,15 @@ async def main():
                 continue
 
             swissadme_res = drug_details.get("swissadme_result")
-            pkcsm_res = drug_details.get("pkcsm_result")
+            # pkcsm_res = drug_details.get("pkcsm_result")
             
             # add to main list
             swissadme_details.append(swissadme_res)
-            pkcsm_details.append(pkcsm_res)
+            # pkcsm_details.append(pkcsm_res)
 
             # write to csv
             write_row_to_csv(swissadme_output_path, swissadme_res)
-            write_row_to_csv(pkcsm_output_path, pkcsm_res)
+            # write_row_to_csv(pkcsm_output_path, pkcsm_res)
             
             logger.write_log("Details has writted to csv. Proceeding to next if there is... \n")
 
@@ -99,11 +99,11 @@ async def scrape_drug_details(drug_name, logger):
     swissadme_result = await navigate_swissadme_site(page, drug_name, canonical_smile, logger) 
     
     #------------pkCSM site------------#
-    pkcsm_result = await navigate_pkcsm_site(page, drug_name, canonical_smile, logger)
+    # pkcsm_result = await navigate_pkcsm_site(page, drug_name, canonical_smile, logger)
 
     results = {
         "swissadme_result": swissadme_result, 
-        "pkcsm_result": pkcsm_result
+        # "pkcsm_result": pkcsm_result
         }
 
     logger.write_log("Successfully retrived swissadme result and pkcsm result.")
