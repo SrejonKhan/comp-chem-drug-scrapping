@@ -18,21 +18,26 @@ async def navigate_swissadme_site(page, drug_name, canonical_smile, logger):
     await page.click("#smiles")
     await page.keyboard.press('ArrowLeft')
     await page.click("#submitButton")
-    await asyncio.sleep(10)
 
-    await page.screenshot({'path': 'screen.png', 'fullPage': True})
-    swissadme_content = await page.content()
-    swissadme_result = scrape_swissadme(swissadme_content, drug_name, canonical_smile)
+    logger.write_log("Waiting for swissadme calculation...")
+    swissadme_result = await scrape_swissadme(page, drug_name, canonical_smile)
     
     logger.write_log("Scrapped swissadme site...")
 
     return swissadme_result
 
-def scrape_swissadme(content, drug_name, smiles) -> Tuple:
+async def scrape_swissadme(page, drug_name, smiles) -> Tuple:
+    content = await page.content()
     soup = BeautifulSoup(content, "html.parser")
 
     left_table = soup.select_one("#sib_body > div:nth-child(33) > div:nth-child(3) > div:nth-child(5) > table:nth-child(4) > tbody")
     right_table = soup.select_one("#sib_body > div:nth-child(33) > div:nth-child(3) > div:nth-child(6) > table > tbody")
+
+    if left_table == None or right_table == None:
+        await asyncio.sleep(1)
+        return await scrape_swissadme(page, drug_name, smiles)
+
+    await page.screenshot({'path': 'screen.png', 'fullPage': True})
 
     left_table_rows = left_table.find_all("tr")
     right_table_rows = right_table.find_all("tr")
