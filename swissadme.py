@@ -24,8 +24,9 @@ async def navigate_swissadme_site(page, drug_name, canonical_smile):
 
     return swissadme_result
 
-def scrape_swissadme(content, drug_name, smiles) -> Tuple:
+async def scrape_swissadme(content, drug_name, smiles) -> Tuple:
     soup = BeautifulSoup(content, "html.parser")
+    await asyncio.sleep(5)
 
     left_table = soup.select_one("#sib_body > div:nth-child(33) > div:nth-child(3) > div:nth-child(5) > table:nth-child(4) > tbody")
     right_table = soup.select_one("#sib_body > div:nth-child(33) > div:nth-child(3) > div:nth-child(6) > table > tbody")
