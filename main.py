@@ -45,6 +45,11 @@ async def main():
         try:
             logger.write_log(f"----Collecting details of {drug_name}----")
             drug_details = await scrape_drug_details(drug_name, logger)
+
+            # Wrong Canonical Smiles
+            if drug_details == None: 
+                continue
+
             swissadme_res = drug_details.get("swissadme_result")
             pkcsm_res = drug_details.get("pkcsm_result")
             
@@ -76,6 +81,10 @@ async def scrape_drug_details(drug_name, logger):
     canonical_smile = canonical_smile_response.text
     canonical_smile = canonical_smile.replace("\n","")
     logger.write_log(canonical_smile)
+
+    if len(canonical_smile) >= 200:
+        logger.write_log(f"Canonical smiles exceed 200 character. We are aborting it. \n")
+        return None
 
     #------------SwissADME site------------#
     swissadme_result = await navigate_swissadme_site(page, drug_name, canonical_smile, logger) 
