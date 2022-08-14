@@ -83,6 +83,11 @@ async def scrape_drug_details(drug_name, logger):
         "/property/CanonicalSMILES/TXT")
 
     canonical_smile = canonical_smile_response.text
+
+    if canonical_smile_response.status_code == 404:
+        logger.write_log(f"Canonical smilesnot found for this drug. We are aborting it. \n")
+        return None
+
     canonical_smile = canonical_smile.replace("\n","")
     logger.write_log(canonical_smile)
 
