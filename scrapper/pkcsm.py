@@ -1,4 +1,3 @@
-from cgitb import reset
 from typing import Tuple
 from bs4 import BeautifulSoup
 import asyncio
@@ -36,7 +35,7 @@ async def navigate_pkcsm_site(page, drug_name, canonical_smile, logger):
 async def wait_till_computation(page, drug_name) -> Tuple:
     content = await page.content()
     soup = BeautifulSoup(content, "html.parser")
-    nextRequest = asyncio.ensure_future(page.waitForNavigation({"timeout": 60000, "waitUntil": "networkidle0"})) 
+    nextRequest = asyncio.ensure_future(page.waitForNavigation({"timeout": 6000, "waitUntil": "networkidle0"})) 
     
     is_all_loaded = True
 
@@ -55,7 +54,6 @@ async def wait_till_computation(page, drug_name) -> Tuple:
             is_all_loaded = False
     
     if not is_all_loaded: 
-        await page.screenshot({'path': 'example.png', 'fullPage': True})
         result = await wait_till_computation(page, drug_name) 
         return result
     

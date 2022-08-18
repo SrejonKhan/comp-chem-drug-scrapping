@@ -2,10 +2,10 @@ import asyncio
 import traceback
 from pyppeteer import launch
 import requests
-from swissadme import navigate_swissadme_site
-from pkcsm import navigate_pkcsm_site
-from csv_io import write_swissadme_headers, write_pkcsm_headers, write_row_to_csv
-from log import Logger
+from scrapper.swissadme import navigate_swissadme_site
+from scrapper.pkcsm import navigate_pkcsm_site
+from file_io.csv_io import write_swissadme_headers, write_pkcsm_headers, write_row_to_csv
+from file_io.log import Logger
 import os
 
 async def main():
@@ -41,7 +41,7 @@ async def main():
             drug_names.append(line.rstrip())
 
     #csv headers
-    # write_swissadme_headers(swissadme_output_path)
+    write_swissadme_headers(swissadme_output_path)
     write_pkcsm_headers(pkcsm_output_path)
 
     # scrape details for each drug
@@ -54,15 +54,15 @@ async def main():
             if drug_details == None: 
                 continue
 
-            # swissadme_res = drug_details.get("swissadme_result")
+            swissadme_res = drug_details.get("swissadme_result")
             pkcsm_res = drug_details.get("pkcsm_result")
             
             # add to main list
-            # swissadme_details.append(swissadme_res)
+            swissadme_details.append(swissadme_res)
             pkcsm_details.append(pkcsm_res)
 
             # write to csv
-            # write_row_to_csv(swissadme_output_path, swissadme_res)
+            write_row_to_csv(swissadme_output_path, swissadme_res)
             write_row_to_csv(pkcsm_output_path, pkcsm_res)
             
             logger.write_log("Details has writted to csv. Proceeding to next if there is... \n")
@@ -96,13 +96,13 @@ async def scrape_drug_details(drug_name, logger):
         return None
 
     #------------SwissADME site------------#
-    # swissadme_result = await navigate_swissadme_site(page, drug_name, canonical_smile, logger) 
+    swissadme_result = await navigate_swissadme_site(page, drug_name, canonical_smile, logger) 
     
     #------------pkCSM site------------#
     pkcsm_result = await navigate_pkcsm_site(page, drug_name, canonical_smile, logger)
 
     results = {
-        # "swissadme_result": swissadme_result, 
+        "swissadme_result": swissadme_result, 
         "pkcsm_result": pkcsm_result
         }
 

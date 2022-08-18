@@ -8,10 +8,10 @@ async def navigate_swissadme_site(page, drug_name, canonical_smile, logger):
     
     swissadme_url = 'http://www.swissadme.ch/index.php'
     await page.goto(swissadme_url)
-
+    await asyncio.sleep(10)
     sadme_js_code = f"""
             smilesTextArea = document.getElementById("smiles");
-            smilesTextArea.textContent = "{canonical_smile}"
+            smilesTextArea.textContent = `{canonical_smile}`
         """
     await page.evaluate(sadme_js_code)
 
@@ -36,8 +36,6 @@ async def scrape_swissadme(page, drug_name, smiles) -> Tuple:
     if left_table == None or right_table == None:
         await asyncio.sleep(1)
         return await scrape_swissadme(page, drug_name, smiles)
-
-    await page.screenshot({'path': 'screen.png', 'fullPage': True})
 
     left_table_rows = left_table.find_all("tr")
     right_table_rows = right_table.find_all("tr")
